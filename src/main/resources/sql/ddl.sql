@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS genre
+CREATE TABLE IF NOT EXISTS genres
 (
     id   INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name TEXT NOT NULL UNIQUE CHECK (name <> '')
@@ -38,6 +38,6 @@ CREATE TABLE IF NOT EXISTS review
 CREATE TABLE IF NOT EXISTS game_genre
 (
     game_id  INT NOT NULL REFERENCES game (id),
-    genre_id INT NOT NULL REFERENCES genre (id),
+    genre_id INT NOT NULL REFERENCES genres (id),
     UNIQUE (game_id, genre_id)
 );

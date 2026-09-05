@@ -1,15 +1,18 @@
 package com.example.demo.dao;
 
 import com.example.demo.model.Genre;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-public interface GenreDao {
-    Genre create(String name);
-    void updateName(int id, String newName);
-    void delete(int id);
-    List<Genre> findAll();
-    Optional<Genre> findById(int id);
+@Repository
+public interface GenreDao extends JpaRepository<Genre, Long> {
+
+    @Modifying
+    @Query("UPDATE Genre g SET g.name = :newName WHERE g.id = :id")
+    void updateName(@Param("id") Long id, @Param("newName") String newName);
 }
 
 
