@@ -1,15 +1,13 @@
-package com.example.demo.model;
+package com.example.demo.model.request;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Getter
 @Setter
-public class Game {
-    private UUID id;
+public class CreateGameRequest {
     private String name;
     private Integer price;
     private String playerQuantity;

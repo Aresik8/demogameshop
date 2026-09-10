@@ -40,7 +40,7 @@ public class GenreServiceImpl implements GenreService {
     @Transactional
     public Genre updateName(Long id, String newName) {
         genreDao.updateName(id, newName);
-        return findById(id); // повторно запрашиваем для возврата актуальных данных
+        return findById(id);
     }
 
     @Override
