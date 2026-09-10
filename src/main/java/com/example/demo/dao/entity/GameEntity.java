@@ -1,21 +1,20 @@
-package com.example.demo.dao.dto;
+package com.example.demo.dao.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Entity
 @Table(name = "games")
 @Getter
 @Setter
-public class GameDto {
+public class GameEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false, length = 200)
     private String name;

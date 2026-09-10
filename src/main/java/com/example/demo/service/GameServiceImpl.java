@@ -2,7 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.converter.GameConverter;
 import com.example.demo.dao.GameDao;
-import com.example.demo.dao.dto.GameDto;
+import com.example.demo.dao.entity.GameEntity;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Game;
 import com.example.demo.model.request.CreateGameRequest;
@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class GameServiceImpl implements GameService {
@@ -24,26 +23,28 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Game getGameById(UUID id) {
-        GameDto gameDto = gameDao.findById(id)
+    @Transactional(readOnly = true)
+    public Game findById(Long id) {
+        GameEntity gameEntity = gameDao.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Игра не найдена"));
 
         Game game = new Game();
         GameConverter gameConverter = new GameConverter();
-        gameConverter.fromDto(gameDto, game);
+        gameConverter.fromEntity(gameEntity, game);
 
         return game;
     }
 
     @Override
-    public List<Game> getAllGames() {
-        List<GameDto> foundGames = gameDao.findAll();
+    @Transactional(readOnly = true)
+    public List<Game> findAll() {
+        List<GameEntity> foundGames = gameDao.findAll();
         List<Game> games = new ArrayList<>(foundGames.size());
         GameConverter gameConverter = new GameConverter();
 
-        for (GameDto gameDto : foundGames) {
+        for (GameEntity gameEntity : foundGames) {
             Game game = new Game();
-            gameConverter.fromDto(gameDto, game);
+            gameConverter.fromEntity(gameEntity, game);
             games.add(game);
         }
 
@@ -52,51 +53,44 @@ public class GameServiceImpl implements GameService {
 
     @Override
     @Transactional
-    public Game createGame(CreateGameRequest request) {
-        GameDto gameDto = new GameDto();
-        gameDto.setName(request.getName());
-        gameDto.setPrice(request.getPrice());
-        gameDto.setPlayerQuantity(request.getPlayerQuantity());
-        gameDto.setDeveloper(request.getDeveloper());
-        gameDto.setReleaseDate(request.getReleaseDate());
-        gameDto.setDescription(request.getDescription());
-        gameDto.setSystemRequirements(request.getSystemRequirements());
+    public Game create(CreateGameRequest request) {
+        GameConverter gameConverter = new GameConverter();
+        GameEntity gameEntity = gameConverter.fromCreateRequestToEntity(request);
 
-        GameDto savedGame = gameDao.save(gameDto);
+        GameEntity savedGame = gameDao.save(gameEntity);
 
         Game game = new Game();
-        GameConverter gameConverter = new GameConverter();
-        gameConverter.fromDto(savedGame, game);
+        gameConverter.fromEntity(savedGame, game);
 
         return game;
     }
 
     @Override
     @Transactional
-    public void deleteGame(UUID id) {
-        gameDao.deleteById(id);
-    }
-
-    @Override
-    @Transactional
-    public Game updateGame(UUID id, UpdateGameRequest request) {
-        GameDto gameDto = gameDao.findById(id)
+    public Game update(Long id, UpdateGameRequest request) {
+        GameEntity gameEntity = gameDao.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Игра не найдена"));
 
-        request.getName().ifPresent(gameDto::setName);
-        request.getPrice().ifPresent(gameDto::setPrice);
-        request.getPlayerQuantity().ifPresent(gameDto::setPlayerQuantity);
-        request.getDeveloper().ifPresent(gameDto::setDeveloper);
-        request.getReleaseDate().ifPresent(gameDto::setReleaseDate);
-        request.getDescription().ifPresent(gameDto::setDescription);
-        request.getSystemRequirements().ifPresent(gameDto::setSystemRequirements);
+        request.getName().ifPresent(gameEntity::setName);
+        request.getPrice().ifPresent(gameEntity::setPrice);
+        request.getPlayerQuantity().ifPresent(gameEntity::setPlayerQuantity);
+        request.getDeveloper().ifPresent(gameEntity::setDeveloper);
+        request.getReleaseDate().ifPresent(gameEntity::setReleaseDate);
+        request.getDescription().ifPresent(gameEntity::setDescription);
+        request.getSystemRequirements().ifPresent(gameEntity::setSystemRequirements);
 
-        GameDto savedGame = gameDao.save(gameDto);
+        GameEntity savedGame = gameDao.save(gameEntity);
 
         Game game = new Game();
         GameConverter gameConverter = new GameConverter();
-        gameConverter.fromDto(savedGame, game);
+        gameConverter.fromEntity(savedGame, game);
 
         return game;
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        gameDao.deleteById(id);
     }
 }

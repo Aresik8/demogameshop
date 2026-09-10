@@ -10,7 +10,6 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @Tag(name = "Игры")
 @RestController
@@ -23,31 +22,34 @@ public class GameController {
         this.gameService = gameService;
     }
 
+    @Operation(summary = "Получить игру по ID")
     @GetMapping("/{id}")
-    public Game getGame(@PathVariable UUID id) {
-        return gameService.getGameById(id);
+    public Game getGame(@PathVariable Long id) {
+        return gameService.findById(id);
     }
 
+    @Operation(summary = "Получить все игры")
     @GetMapping
     public List<Game> getAllGames() {
-        return gameService.getAllGames();
+        return gameService.findAll();
     }
 
+    @Operation(summary = "Создать игру")
     @PostMapping
     public Game createGame(@Valid @RequestBody CreateGameRequest request) {
-        return gameService.createGame(request);
+        return gameService.create(request);
     }
 
-    @Operation(summary = "Удалить игру",
-            description = "Удаляет игру по ID")
-    @DeleteMapping("/{id}")
-    public void deleteGame(@PathVariable UUID id) {
-        gameService.deleteGame(id);
-    }
-
+    @Operation(summary = "Обновить игру")
     @PatchMapping("/{id}")
-    public Game updateGame(@PathVariable UUID id,
+    public Game updateGame(@PathVariable Long id,
                            @Valid @RequestBody UpdateGameRequest request) {
-        return gameService.updateGame(id, request);
+        return gameService.update(id, request);
+    }
+
+    @Operation(summary = "Удалить игру")
+    @DeleteMapping("/{id}")
+    public void deleteGame(@PathVariable Long id) {
+        gameService.delete(id);
     }
 }

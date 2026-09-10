@@ -4,12 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Getter
 @Setter
 public class Game {
-    private UUID id;
+    private Long id;
     private String name;
     private Integer price;
     private String playerQuantity;

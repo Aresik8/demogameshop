@@ -1,12 +1,11 @@
 package com.example.demo.controller;
 
-import com.example.demo.service.GenreService;
 import com.example.demo.model.Genre;
 import com.example.demo.model.request.GenreRequest;
+import com.example.demo.service.GenreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,10 +13,13 @@ import java.util.List;
 @Tag(name = "Жанры")
 @RestController
 @RequestMapping("/api/genres")
-@RequiredArgsConstructor
 public class GenreController {
 
     private final GenreService genreService;
+
+    public GenreController(GenreService genreService) {
+        this.genreService = genreService;
+    }
 
     @Operation(summary = "Получить жанр по ID")
     @GetMapping("/{id}")
@@ -39,9 +41,9 @@ public class GenreController {
 
     @Operation(summary = "Обновить название жанра")
     @PatchMapping("/{id}")
-    public Genre updateGenreName(@PathVariable Long id,
-                                 @Valid @RequestBody GenreRequest request) {
-        return genreService.updateName(id, request.getName());
+    public Genre updateGenre(@PathVariable Long id,
+                             @Valid @RequestBody GenreRequest request) {
+        return genreService.update(id, request.getName());
     }
 
     @Operation(summary = "Удалить жанр")

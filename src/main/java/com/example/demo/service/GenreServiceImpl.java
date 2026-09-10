@@ -3,17 +3,19 @@ package com.example.demo.service;
 import com.example.demo.dao.GenreDao;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Genre;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class GenreServiceImpl implements GenreService {
 
     private final GenreDao genreDao;
+
+    public GenreServiceImpl(GenreDao genreDao) {
+        this.genreDao = genreDao;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -38,9 +40,10 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     @Transactional
-    public Genre updateName(Long id, String newName) {
-        genreDao.updateName(id, newName);
-        return findById(id);
+    public Genre update(Long id, String name) {
+        Genre genre = findById(id);
+        genre.setName(name);
+        return genreDao.save(genre);
     }
 
     @Override
