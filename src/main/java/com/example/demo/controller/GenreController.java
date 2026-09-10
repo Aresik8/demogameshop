@@ -1,60 +1,54 @@
 package com.example.demo.controller;
 
-import com.example.demo.dao.GenreDao;
 import com.example.demo.model.Genre;
+import com.example.demo.model.request.GenreRequest;
+import com.example.demo.service.GenreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @Tag(name = "Жанры")
 @RestController
 @RequestMapping("/api/genres")
 public class GenreController {
 
-    private final GenreDao genreDao;
+    private final GenreService genreService;
 
-    public GenreController(GenreDao genreDao) {
-        this.genreDao = genreDao;
+    public GenreController(GenreService genreService) {
+        this.genreService = genreService;
     }
 
+    @Operation(summary = "Получить жанр по ID")
     @GetMapping("/{id}")
-    public Genre getGenre(@PathVariable int id) {
-        return genreDao.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Жанр не найден"));
+    public Genre getGenre(@PathVariable Long id) {
+        return genreService.findById(id);
     }
 
+    @Operation(summary = "Получить все жанры")
     @GetMapping
     public List<Genre> getAllGenres() {
-        return genreDao.findAll();
+        return genreService.findAll();
     }
 
+    @Operation(summary = "Создать жанр")
     @PostMapping
-    public Genre createGenre(@Valid @RequestBody CreateGenreRequest request) {
-        return genreDao.create(request.getName());
+    public Genre createGenre(@Valid @RequestBody GenreRequest request) {
+        return genreService.create(request.getName());
     }
 
-    @Operation(summary = "Обновить название жанра",
-            description = "Обновляет название жанра по его ID")
+    @Operation(summary = "Обновить название жанра")
     @PatchMapping("/{id}")
-    public Genre updateGenreName(@PathVariable int id,
-                                 @Valid @RequestBody UpdateGenreRequest request) {
-        genreDao.updateName(id, request.getName());
-        return genreDao.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Жанр не найден"));
+    public Genre updateGenre(@PathVariable Long id,
+                             @Valid @RequestBody GenreRequest request) {
+        return genreService.update(id, request.getName());
     }
 
-    @Operation(summary = "Удалить жанр",
-            description = "Удаляет жанр по ID")
+    @Operation(summary = "Удалить жанр")
     @DeleteMapping("/{id}")
-    public void deleteGenre(@PathVariable int id) {
-        genreDao.delete(id);
+    public void deleteGenre(@PathVariable Long id) {
+        genreService.delete(id);
     }
-
-    // DTO-классы для запросов (можно вынести в отдельные файлы)
- // public record CreateGenreRequest(String name) {}
- // public record UpdateGenreRequest(String name) {}
 }

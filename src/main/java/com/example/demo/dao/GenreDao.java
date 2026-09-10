@@ -1,15 +1,14 @@
 package com.example.demo.dao;
 
 import com.example.demo.model.Genre;
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import java.util.Optional;
 
-public interface GenreDao {
-    Genre create(String name);
-    void updateName(int id, String newName);
-    void delete(int id);
-    List<Genre> findAll();
-    Optional<Genre> findById(int id);
+@Repository
+public interface GenreDao extends JpaRepository<Genre, Long> {
+    Optional<Genre> findByName(String name);
 }
 
 

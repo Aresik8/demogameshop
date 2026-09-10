@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS genre
+CREATE TABLE IF NOT EXISTS genres
 (
     id   INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name TEXT NOT NULL UNIQUE CHECK (name <> '')
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS users
     password TEXT NOT NULL CHECK (password <> '')
 );
 
-CREATE TABLE IF NOT EXISTS game
+CREATE TABLE IF NOT EXISTS games
 (
     id                  INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name                TEXT NOT NULL UNIQUE CHECK (name <> ''),
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS game
 CREATE TABLE IF NOT EXISTS review
 (
     id          INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    game_id     INT  NOT NULL REFERENCES game (id),
+    game_id     INT  NOT NULL REFERENCES games (id),
     user_id     INT  NOT NULL REFERENCES users (id),
     is_positive BOOL NOT NULL DEFAULT TRUE,
     created_at  DATE NOT NULL DEFAULT CURRENT_DATE,
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS review
 
 CREATE TABLE IF NOT EXISTS game_genre
 (
-    game_id  INT NOT NULL REFERENCES game (id),
-    genre_id INT NOT NULL REFERENCES genre (id),
+    game_id  INT NOT NULL REFERENCES games (id),
+    genre_id INT NOT NULL REFERENCES genres (id),
     UNIQUE (game_id, genre_id)
 );
